@@ -11,6 +11,11 @@
     user-select: none;           /* Non-prefixed version, currently */  
 }
 
+h1 {
+    background-color:#000;
+    color:#db2db6;
+}
+
 .mdp-input{
     float: left;
     width: 150px;
@@ -23,7 +28,8 @@
 }
 .mdp-input input{
     width: 130%;
-    background: #f5f5f5;
+    background: rgb(41, 40, 40);
+    color: #db3bb9;
     border: none;
     padding-right: 10px;
     height: 35px;
@@ -64,17 +70,17 @@
 
 .mdpch-button{
     float: left;
-    width: 45px;
+    width: 60px;
     height: 100%;
     box-sizing: border-box;
     position: relative;
 }
 .mdpchb-inner:hover > span{
-    border-color: #555!important;
+    border-color: #000!important;
 } 
 .mdpchb-inner:hover{ 
     cursor: pointer;
-    background: #fff;
+    background: #dd77cf;
 }
 .mdpchb-inner {
     float: left;
@@ -88,7 +94,7 @@
     top:50%;
     left: 50%;
     margin-left: -17px;
-    margin-top: -17px;
+    margin-top: -28px;
 }
 
 .mdpchbi-right-arrows:after,
@@ -139,13 +145,13 @@
  
 
 .mdpch-container{
-    float: left;
+    float: none;
     width: 120px;
     height: 100%;
 }
 .mdpchc-year{
     float: left;
-    width: 100%;
+    width: 200%;
     height: 30px;
     font-size: 27px;
     color: #000;
@@ -153,8 +159,8 @@
     text-align: center;
 }
 .mdpchc-month{
-    float: left;
-    width: 100%;
+    float: none;
+    width: 200%;
     height: 15px;
     font-size: 13px;
     color: #000;

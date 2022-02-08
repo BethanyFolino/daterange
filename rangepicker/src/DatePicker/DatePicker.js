@@ -228,6 +228,10 @@ export default class DatePicker extends Component {
                 {this.state.showDatePicker ? (
                     <div className='mdp-container'>
                         <div className='mdpc-head'>
+                            <div className='mdpch-container'>
+                                <div className='mdpchc-year'>{this.state.year}</div>
+                                <div className='mdpchc-month'>{this.getMonthStr(this.state.month)}</div>
+                            </div>
                             <div className='mdpch-button'>
                                 <div className='mdpchb-inner' onClick={()=> this.setYear(-1)}>
                                     <span className='mdpchbi-left-arrows'></span>
@@ -238,16 +242,12 @@ export default class DatePicker extends Component {
                                     <span className='mdpchbi-left-arrow'></span>
                                 </div>
                             </div>
-                            <div className='mdpch-container'>
-                                <div className='mdpchc-year'>{this.state.year}</div>
-                                <div className='mdpchc-month'>{this.getMonthStr(this.state.month)}</div>
-                            </div>
                             <div className='mdpch-button'>
-                                <div className='mdpchb-inner' onClick={()=> this.setMonth(1)}>
+                                <div className='mdpchb-inner' onClick={()=> this.setMonth(+1)}>
                                     <span className='mdpchbi-right-arrow'></span>
                                 </div>
                             </div>
-                            <div className='mdpch-button' onClick={()=> this.setYear(1)}>
+                            <div className='mdpch-button' onClick={()=> this.setYear(+1)}>
                                 <div className='mdpchb-inner'>
                                     <span className='mdpchbi-right-arrows'></span>
                                 </div>
