@@ -10,12 +10,6 @@
     -ms-user-select: none;       /* Internet Explorer/Edge */
     user-select: none;           /* Non-prefixed version, currently */  
 }
-
-h1 {
-    background-color:#000;
-    color:#db2db6;
-}
-
 .mdp-input{
     float: left;
     width: 150px;
@@ -70,7 +64,8 @@ h1 {
 
 .mdpch-button{
     float: left;
-    width: 60px;
+    width: 50%;
+    padding: -10px;
     height: 100%;
     box-sizing: border-box;
     position: relative;
