@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import './DatePicker.css';
 
-// let oneDay = 60 * 60 * 24 * 1000;
-// let todayTimestamp = Date.now() - (Date.now() % oneDay) + (new Date().getTimezoneOffset() * 1000 * 60);
+let oneDay = 60 * 60 * 24 * 1000;
+let todayTimestamp = Date.now() - (Date.now() % oneDay) + (new Date().getTimezoneOffset() * 1000 * 60);
 let inputRef = React.createRef();
 let inputRefTwo = React.createRef();
 
@@ -21,15 +21,14 @@ export default class DatePicker extends Component {
         this.state = {
             year,
             month,
-            selectedDay: new Date(),
-            selectedDayTwo: new Date(),
+            selectedDay: inputRef,
+            selectedDayTwo: inputRefTwo,
             monthDetails: this.getMonthDetails(year, month)
         }
     }
 
     componentDidMount() {
         window.addEventListener('click', this.addBackDrop);
-        this.setDateToInput(this.state.selectedDayTwo);
         this.setDateToInput(this.state.selectedDay);
     }
 
@@ -47,10 +46,7 @@ export default class DatePicker extends Component {
         this.setState({ showDatePicker })
     }
 
-    /**
-     *  Core
-     */
-
+   // Core
     daysMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     monthMap = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     
@@ -105,22 +101,31 @@ export default class DatePicker extends Component {
         return monthArray;
     }
 
-    // isCurrentDay =day=> {
-    //     return day.timestamp === todayTimestamp;
-    // }
-
-    isSelectedDay =day=> {
+    isStartDay =day=> {
         return day.timestamp === this.state.selectedDay;
     }
 
-    isSelectedDayTwo =day=> {
-        return day.timestamp === this.state.selectedDayTwo;
+    // An attempt to get the end day to highlight if there is already a start day
+    isEndDay =day=> {
+        if(!this.isStartDay) {
+            return day.timestamp === this.state.selectedDayTwo;
+        }
+        
+    }
+
+    // An attempt to get the days between the start and end date to be highlighted
+    isBetweenDays =day=> {
+        if(this.isStartDay() && this.isEndDay()) {
+            return day.timestamp === this.state.isBetweenDays;
+        }
     }
 
     getDateFromDateString =dateValue=> {
         let dateData = dateValue.split('-').map(d=>parseInt(d, 10));
-        if(dateData.length < 3) 
+        if(dateData.length < 3) {
             return null;
+        }
+            
 
         let year = dateData[0];
         let month = dateData[1];
@@ -130,14 +135,14 @@ export default class DatePicker extends Component {
 
     getDateFromDateStringTwo =dateValueTwo=> {
         let dateDataTwo = dateValueTwo.split('-').map(d=>parseInt(d, 10));
-        if(dateDataTwo.length < 3)
+        if(dateDataTwo.length < 3) {
             return null;
-        
+        }
+
         let year = dateDataTwo[0];
         let month = dateDataTwo[1];
         let date = dateDataTwo[2];
         return {year, month, date};
-
     }
 
     getMonthStr =month=> this.monthMap[Math.max(Math.min(11, month), 0)] || 'Month';
@@ -151,9 +156,9 @@ export default class DatePicker extends Component {
 
     getDateStringFromTimestampTwo =timestamp=> {
         let dateObjectTwo = new Date(timestamp);
-        let month = dateObjectTwo.getMonth()+1;
-        let date = dateObjectTwo.getDate();
-        return dateObjectTwo.getFullYear() + '-' + (month < 10 ? '0'+month : month) + '-' + (date < 10 ? '0'+date : date);
+        let monthTwo = dateObjectTwo.getMonth()+1;
+        let dateTwo = dateObjectTwo.getDate();
+        return dateObjectTwo.getFullYear() + '-' + (monthTwo < 10 ? '0'+monthTwo : monthTwo) + '-' + (dateTwo < 10 ? '0'+dateTwo : dateTwo);
     }
 
     setDate =dateData=> {
@@ -162,20 +167,18 @@ export default class DatePicker extends Component {
         if(this.props.onChange) {
             this.props.onChange(selectedDay);
         }
-    }
 
-    setDateTwo =dateDataTwo=> {
-        let selectedDayTwo = new Date(dateDataTwo.year, dateDataTwo.month-1, dateDataTwo.date).getTime();
+        let selectedDayTwo = new Date(dateData.year, dateData.month-1, dateData.date).getTime();
         this.setState({ selectedDayTwo })
         if(this.props.onChange) {
-            this.props.onChange(selectedDayTwo);
+            this.props.onChange(selectedDayTwo)
         }
     }
 
     updateDateFromInput =()=> {
         let dateValue = inputRef.current.value;
-        let dateValueTwo = inputRefTwo.current.value;
         let dateData = this.getDateFromDateString(dateValue);
+        let dateValueTwo = inputRefTwo.current.value;
         let dateDataTwo = this.getDateFromDateStringTwo(dateValueTwo);
 
         if(dateData !== null) { 
@@ -192,30 +195,20 @@ export default class DatePicker extends Component {
             this.setState({
                 year: dateDataTwo.year,
                 month: dateDataTwo.month-1,
-                monthDetails: this.getMonthDetails(dateDataTwo.year, dateDataTwo.month-1)
+                monthDetails: this.getMonthDetails(dateData.month.year, dateDataTwo.month-1)
             })
         }
     }
 
     setDateToInput =(timestamp)=> {
         let dateString = this.getDateStringFromTimestamp(timestamp);
-        inputRef.current.value = dateString;
-    }
-
-    setDateToInputTwo =(timestamp)=> {
         let dateStringTwo = this.getDateStringFromTimestampTwo(timestamp);
+        inputRef.current.value = dateString;
         inputRefTwo.current.value = dateStringTwo;
     }
 
     onDateClick =day=> {
         this.setState({selectedDay: day.timestamp}, ()=>this.setDateToInput(day.timestamp));
-        if(this.props.onChange) {
-            this.props.onChange(day.timestamp);
-        }
-    }
-
-    onDateClickTwo =day=> {
-        this.setState({selectedDayTwo: day.timestamp}, ()=>this.setDateToInputTwo(day.timestamp));
         if(this.props.onChange) {
             this.props.onChange(day.timestamp);
         }
@@ -247,15 +240,12 @@ export default class DatePicker extends Component {
         })
     }
 
-    /**
-     *  Renderers
-     */
-
+    // Renderers
     renderCalendar() {
         let days = this.state.monthDetails.map((day, index)=> {
             return (
                 <div className={'c-day-container ' + (day.month !== 0 ? ' disabled' : '') + 
-                    (this.isSelectedDay(day) ? ' highlight' : '') + (this.isSelectedDayTwo(day) ? ' highlight-green' : '')} key={index}>
+                    (this.isStartDay(day) ? ' highlight' : '') + (this.isEndDay(day) ? ' highlight' : '')} key={index}>
                     <div className='cdc-day'>
                         <span onClick={()=>this.onDateClick(day)}>
                             {day.date}
@@ -293,11 +283,6 @@ export default class DatePicker extends Component {
                                 <div className='mdpchc-year'>{this.state.year}</div>
                                 <div className='mdpchc-month'>{this.getMonthStr(this.state.month)}</div>
                             </div>
-                            {/* <div className='mdpch-button'>
-                                <div className='mdpchb-inner' onClick={()=> this.setYear(-1)}>
-                                    <span className='mdpchbi-left-arrows'></span>
-                                </div>
-                            </div> */}
                             <div className='mdpch-button'>
                                 <div className='mdpchb-inner' onClick={()=> this.setMonth(-1)}>
                                     <span className='mdpchbi-left-arrow'></span>
@@ -308,11 +293,6 @@ export default class DatePicker extends Component {
                                     <span className='mdpchbi-right-arrow'></span>
                                 </div>
                             </div>
-                            {/* <div className='mdpch-button' onClick={()=> this.setYear(+1)}>
-                                <div className='mdpchb-inner'>
-                                    <span className='mdpchbi-right-arrows'></span>
-                                </div>
-                            </div> */}
                         </div>
                         <div className='mdpc-body'>
                             {this.renderCalendar()}
