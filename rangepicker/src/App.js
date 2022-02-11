@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="App">
       <h2>Welcome to Date Range Picker!</h2>
-      <h4>To use, click on the date box below.</h4>
+      <h4>To use, click on the left date box below.</h4>
       <DatePicker onChange={onChange}/>
     </div>
   );

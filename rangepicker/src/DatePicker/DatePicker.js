@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import './DatePicker.css';
 
-let oneDay = 60 * 60 * 24 * 1000;
-let todayTimestamp = Date.now() - (Date.now() % oneDay) + (new Date().getTimezoneOffset() * 1000 * 60);
 let inputRef = React.createRef();
 let inputRefTwo = React.createRef();
 
@@ -30,6 +28,7 @@ export default class DatePicker extends Component {
     componentDidMount() {
         window.addEventListener('click', this.addBackDrop);
         this.setDateToInput(this.state.selectedDay);
+        this.setDateToInput(this.state.selectedDayTwo);
     }
 
     componentWillUnmount() {
@@ -107,7 +106,7 @@ export default class DatePicker extends Component {
 
     // An attempt to get the end day to highlight if there is already a start day
     isEndDay =day=> {
-        if(!this.isStartDay) {
+        if(this.isStartDay) {
             return day.timestamp === this.state.selectedDayTwo;
         }
         
@@ -125,7 +124,6 @@ export default class DatePicker extends Component {
         if(dateData.length < 3) {
             return null;
         }
-            
 
         let year = dateData[0];
         let month = dateData[1];
